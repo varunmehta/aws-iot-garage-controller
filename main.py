@@ -10,9 +10,15 @@ This is the main garage controller. The features it entails.
  - Alexa ask CarPen to open
  - Alexa ask CarPen to close
  - Alexa ask CarPen the status ~ Return Open or Close
+
+ TODO: Replace all print statements with logs or SNS alerts.
+
 """
+import json
 import config
 import logging
+
+from enum import Enum
 from gpiozero import Motor
 from gpiozero import Button
 from datetime import datetime
@@ -23,69 +29,110 @@ from time import sleep
 # forward is considering closing the garage
 # backward is considered opening the garage
 motor = Motor(forward=config.MOTOR_CLOSE, backward=config.MOTOR_OPEN, pwm=False)
-sensor = Button(config.DOOR_SENSOR, pull_up=True, hold_time=10)
+# if the door is open longer than hold time, it'll send an alert.
+# to prevent false reads with magnets, the bounce time is 2 seconds
+sensor = Button(config.DOOR_SENSOR, pull_up=True, hold_time=10, bounce_time=2)
+
+
+class Garage(Enum):
+    """
+        Instead of using if else of "open" or "close", defined a simple enum
+
+        If you want to keep the door partially open for your pet, you can trigger open or close and then stop.
+
+        TODO: Enable pet mode, which opens the garage only for 5 seconds, and vice-versa for close mode.
+    """
+    OPEN = "open"
+    CLOSE = "close"
+    STOP = "stop"
+
+
 # allowed_actions = ['both', 'publish', 'subscribe']
 
-'''
-    When the door is open for too long, you can send an SNS alert.
-'''
-
-
 def open_too_long_alert():
-    print("Door open for too long. Do you want to close it ? ")
-    return
+    """
+        When the door is open for too long, you can send an SNS alert.
+    """
+    lps("Door open for too long. Do you want to close it ? ")
 
 
-'''
-    Status of the door is open or closed.  
-'''
-
-
-def send_message(status):
-    print("Door status changed " + status)
+def garage_status(status):
+    """
+        Send a message to DynamoDB and log the status of the garage door.
+        The TTL of the message should be 45 days.
+    """
+    lps("Door: " + status)
 
 
 def garage_opened():
-    send_message("Opened")
-    return
+    garage_status(Garage.OPEN)
 
 
 def garage_closed():
-    send_message("Closed")
-    return
+    garage_status(Garage.CLOSE)
 
 
-"""
-    Meat of the logic to handle garage door open-close.
-    Verify against sensor to check if the garage is already open or closed.
-"""
+def lps(message):
+    """
+        L: Log
+        P: Print to console
+        S: Send to AWS
+
+        This method is supposed to log the message to log4j, print to console (for testing),
+        and send the message to be logged as an event. All events are logged.
+    """
+    print(message)
 
 
-def door_sensor():
+def register_door_sensors():
+    """
+        Magnetic Reed Switch callback methods to be called on change in state.
+    """
     sensor.when_activated = garage_opened
     sensor.when_deactivated = garage_closed
-
     sensor.when_held = open_too_long_alert
 
-    return
+    if sensor.is_held:
+        lps("Garage door is currently open.")
+    elif sensor.is_active:
+        lps("Garage door is currently closed")
+    else:
+        lps("Garage door status UNKNOWN, please verify manually")
 
 
-def open_close_garage():
-    print("Moving the motor forward")
-    motor.forward()
+def open_close_garage(garage):
+    """
+        Meat of the logic to handle garage door open-close.
 
-    sleep(5)
+        Opening or closing of the garage will be triggered based of what the sensor state is. Without the reed switch,
+        there is no way for the pi to know if the garage door is opened or closed.
 
-    print("Moving the motor backward")
-    motor.reverse()
+        TODO: test direction with real motor
+    """
 
-    sleep(5)
+    if garage.OPEN:
+        if sensor.is_held:
+            lps("Garage door is already open. Nothing to open")
+        elif sensor.is_active:
+            lps("Opening the garage...")
+            motor.forward()
 
-    print("Stop motor")
-    motor.stop()
+    if garage.CLOSE:
+        if sensor.is_active:
+            lps("Garage door is already closed. Nothing to close")
+        elif sensor.is_held:
+            lps("Closing the garage...")
+            motor.reverse()
 
-    return
+    if garage.STOP:
+        lps("Stopping garage door")
+        motor.stop()
 
+
+def transcribe_message():
+    """
+        Transcribe the json method via subscription, and open or close garage.
+    """
 
 # Configure logging
 # logger = logging.getLogger("AWSIoTPythonSDK.core")
@@ -105,13 +152,22 @@ def open_close_garage():
 # client.configureDrainingFrequency(2)
 # client.configureConnectDisconnectTimeout(10)
 # client.configureMQTTOperationTimeout(5)
+#client.subscribe(topic, 1, myCallbackContainer.messageForward)
+
 
 
 # Connect
 # print('Connecting to endpoint ' + config.HOST_NAME)
 
-door_sensor()
-open_close_garage()
-sleep(60)
+
+register_door_sensors()
+
+"""
+For the main method, first register sensors, and then for every subscription, add a call back, 
+which opens/closes garage.  
+"""
+
+#while True:
+
 
 # client.connect()
