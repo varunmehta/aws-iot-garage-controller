@@ -14,6 +14,7 @@ Using the AWS IoT API, the Pi stays local to your network, and also due to the w
 
  - [X] Connect Pi to motor and sensor, and control via python program.
  - [ ] Write in AWSIoT component and get the code moving via iot messages.
- - [ ] Build UI and Lambda function to control it.   
+ - [ ] Build UI and Lambda function to control it.
+ - [ ] Push certificates onto the Pi   
 
  

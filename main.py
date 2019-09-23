@@ -23,8 +23,7 @@ from gpiozero import Motor
 from gpiozero import Button
 from datetime import datetime
 from time import sleep
-
-# from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 # forward is considering closing the garage
 # backward is considered opening the garage
@@ -32,6 +31,7 @@ motor = Motor(forward=config.MOTOR_CLOSE, backward=config.MOTOR_OPEN, pwm=False)
 # if the door is open longer than hold time, it'll send an alert.
 # to prevent false reads with magnets, the bounce time is 2 seconds
 sensor = Button(config.DOOR_SENSOR, pull_up=True, hold_time=10, bounce_time=2)
+allowed_actions = ['both', 'publish', 'subscribe']
 
 
 class Garage(Enum):
@@ -46,8 +46,6 @@ class Garage(Enum):
     CLOSE = "close"
     STOP = "stop"
 
-
-# allowed_actions = ['both', 'publish', 'subscribe']
 
 def open_too_long_alert():
     """
@@ -109,7 +107,6 @@ def open_close_garage(garage):
 
         TODO: test direction with real motor
     """
-
     if garage.OPEN:
         if sensor.is_held:
             lps("Garage door is already open. Nothing to open")
@@ -129,45 +126,59 @@ def open_close_garage(garage):
         motor.stop()
 
 
-def transcribe_message():
+def transcribe_message(message):
     """
         Transcribe the json method via subscription, and open or close garage.
     """
 
+
+def handle_subscription(client, userdata, message):
+    """
+        Call back method called for every subscription
+
+        Where message contains topic and payload.
+        Note: client and userdata are pending to be deprecated and should not be depended on.
+
+    """
+    # for now printing message, figure out more on payload and play with it.
+    print("Topic: " + message.topic)
+    print("Payload:" + message.payload)
+
+
 # Configure logging
-# logger = logging.getLogger("AWSIoTPythonSDK.core")
-# logger.setLevel(logging.INFO)
-# streamHandler = logging.StreamHandler()
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# streamHandler.setFormatter(formatter)
-# logger.addHandler(streamHandler)
+logger = logging.getLogger("AWSIoTPythonSDK.core")
+logger.setLevel(logging.INFO)
+streamHandler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+streamHandler.setFormatter(formatter)
+logger.addHandler(streamHandler)
 
 # Initialize MQTT client
-# client = AWSIoTMQTTClient('')
+client = AWSIoTMQTTClient('')
 
 # Configure client endpoint, port information, certs
-# client.configureEndpoint(config.HOST_NAME, config.HOST_PORT)
-# client.configureCredentials(config.ROOT_CERT, config.PRIVATE_KEY, config.DEVICE_CERT)
-# client.configureOfflinePublishQueueing(-1)
-# client.configureDrainingFrequency(2)
-# client.configureConnectDisconnectTimeout(10)
-# client.configureMQTTOperationTimeout(5)
-#client.subscribe(topic, 1, myCallbackContainer.messageForward)
-
-
+client.configureEndpoint(config.HOST_NAME, config.HOST_PORT)
+client.configureCredentials(config.ROOT_CERT, config.PRIVATE_KEY, config.DEVICE_CERT)
+client.configureOfflinePublishQueueing(-1)
+client.configureDrainingFrequency(2)
+client.configureConnectDisconnectTimeout(10)
+client.configureMQTTOperationTimeout(5)
+client.subscribe(config.SENSOR_TOPIC, 1, handle_subscription)
 
 # Connect
 # print('Connecting to endpoint ' + config.HOST_NAME)
+# client.connect()
 
 
 register_door_sensors()
+
 
 """
 For the main method, first register sensors, and then for every subscription, add a call back, 
 which opens/closes garage.  
 """
 
-#while True:
-
-
-# client.connect()
+while True:
+    """
+        To infinity and beyond! 
+    """
