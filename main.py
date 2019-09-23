@@ -112,5 +112,6 @@ def open_close_garage():
 
 door_sensor()
 open_close_garage()
+sleep(60)
 
 # client.connect()
