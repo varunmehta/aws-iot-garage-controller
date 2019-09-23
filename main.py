@@ -16,6 +16,8 @@ import logging
 from gpiozero import Motor
 from gpiozero import Button
 from datetime import datetime
+from time import sleep
+
 # from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 # forward is considering closing the garage
@@ -59,17 +61,19 @@ def garage_closed():
 """
 
 
-def open_close_garage(action):
-    sensor.when_activated = garage_opened
+def open_close_garage():
+    motor.forward()
 
-    sensor.when_held = open_too_long_alert
+    sleep(5)
 
-    if sensor.is_pressed:
-        motor.forward()
+    motor.reverse()
+
+    sleep(5)
 
     motor.stop()
 
     return
+
 
 # Configure logging
 # logger = logging.getLogger("AWSIoTPythonSDK.core")
@@ -90,6 +94,10 @@ def open_close_garage(action):
 # client.configureConnectDisconnectTimeout(10)
 # client.configureMQTTOperationTimeout(5)
 
+
 # Connect
-print('Connecting to endpoint ' + config.HOST_NAME)
+# print('Connecting to endpoint ' + config.HOST_NAME)
+
+open_close_garage()
+
 # client.connect()
