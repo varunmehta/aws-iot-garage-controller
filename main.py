@@ -22,7 +22,7 @@ from time import sleep
 
 # forward is considering closing the garage
 # backward is considered opening the garage
-motor = Motor(forward=config.MOTOR_CLOSE, backward=config.MOTOR_OPEN)
+motor = Motor(forward=config.MOTOR_CLOSE, backward=config.MOTOR_OPEN,pwm=False)
 sensor = Button(config.DOOR_SENSOR, pull_up=True, hold_time=150)
 # allowed_actions = ['both', 'publish', 'subscribe']
 
