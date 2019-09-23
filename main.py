@@ -22,8 +22,8 @@ from time import sleep
 
 # forward is considering closing the garage
 # backward is considered opening the garage
-motor = Motor(forward=config.MOTOR_CLOSE, backward=config.MOTOR_OPEN,pwm=False)
-sensor = Button(config.DOOR_SENSOR, pull_up=True, hold_time=150)
+motor = Motor(forward=config.MOTOR_CLOSE, backward=config.MOTOR_OPEN, pwm=False)
+sensor = Button(config.DOOR_SENSOR, pull_up=True, hold_time=10)
 # allowed_actions = ['both', 'publish', 'subscribe']
 
 '''
@@ -61,15 +61,27 @@ def garage_closed():
 """
 
 
+def door_sensor():
+    sensor.when_activated = garage_opened
+    sensor.when_deactivated = garage_closed
+
+    sensor.when_held = open_too_long_alert
+
+    return
+
+
 def open_close_garage():
+    print("Moving the motor forward")
     motor.forward()
 
     sleep(5)
 
+    print("Moving the motor backward")
     motor.reverse()
 
     sleep(5)
 
+    print("Stop motor")
     motor.stop()
 
     return
@@ -98,6 +110,7 @@ def open_close_garage():
 # Connect
 # print('Connecting to endpoint ' + config.HOST_NAME)
 
+door_sensor()
 open_close_garage()
 
 # client.connect()
