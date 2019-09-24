@@ -18,8 +18,8 @@ def lambda_handler(event, context):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Logs')
     fe = Key('timestamp').gt(0)
-    pe = "#ts, garageStatus"
-    ean = { "#ts": "timestamp",}
+    pe = "#ts,#st"
+    ean = { "#ts": "timestamp", "#st" : "status"}
     
     response = table.scan(
         FilterExpression=fe,
