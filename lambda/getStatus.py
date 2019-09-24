@@ -4,7 +4,6 @@ import decimal
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
-
 # TODO implement
 
 def lambda_handler(event, context):
@@ -17,21 +16,28 @@ def lambda_handler(event, context):
                     return int(o)
             return super(DecimalEncoder, self).default(o)
     dynamodb = boto3.resource('dynamodb')
-    logTable = dynamodb.Table('Logs')
-    max_key = logTable.item_count('timestamp')
-    #timestamp = "01283709222019"
-    try:
-        response = logTable.get_item(
-            Key={
-                'timestamp': max_key
-            }
+    table = dynamodb.Table('Logs')
+    fe = Key('timestamp').gt(0)
+    pe = "#ts, garageStatus"
+    ean = { "#ts": "timestamp",}
+    
+    response = table.scan(
+        FilterExpression=fe,
+        ProjectionExpression=pe,
+        ExpressionAttributeNames=ean
+    )
+    while 'LastEvaluatedKey' in response:
+        response = table.scan(
+            ProjectionExpression=pe,
+            FilterExpression=fe,
+            ExpressionAttributeNames=ean,
+            ExclusiveStartKey=response['LastEvaluatedKey']
         )
-    except ClientError as e:
-        print(e.response['Error']['Message'])
-    else:
-        item = response['Item']
-        print("GetItem succeeded:")
-        print(json.dumps(item, indent=4, cls=DecimalEncoder))
+        
+    currentStatus = max(response['Items'], key=lambda Item: Item['timestamp'])
+    print(currentStatus)
 
+
+        
 
 
