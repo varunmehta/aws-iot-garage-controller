@@ -80,6 +80,7 @@ def lps(message):
         and send the message to be logged as an event. All events are logged.
     """
     print(message)
+    client.publish(config.SENSOR_TOPIC, message, 1)
 
 
 def register_door_sensors():
