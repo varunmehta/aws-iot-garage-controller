@@ -16,6 +16,12 @@ Using the AWS IoT API, the Pi stays local to your network, and also due to the w
 
 ![Alt text](motor-pi-wiring-diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
 
+## Phase 2 (not implemented)
+
+Use the AWS ML/AI services and perform image recognition using face profiles. If the user in video is unknown, send intruder alert.
+
+![Alt text](IotHackathonFlow_Phase2.png?raw=true "Use ML/AI to perform image recognition")
+
 # Task List
 
  - [X] Connect Pi to motor and sensor, and control via python program.
