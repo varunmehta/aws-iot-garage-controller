@@ -6,15 +6,19 @@ There are many projects on the internet which emulate this problem, the idea to 
 
 Using the AWS IoT API, the Pi stays local to your network, and also due to the whole certificate exchange and other IoT core security measures you know how the data is travelling b/w your pi and the n/w.   
 
-## Wiring Diagram
+# Architecture
+
+## AWS Setup
+
+![Alt text](IotHackathonFlow.png?raw=true "AWS Ecosystem")
+
+## GPIO Wiring Diagram
 
 ![Alt text](motor-pi-wiring-diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
 
-## Task List
+# Task List
 
  - [X] Connect Pi to motor and sensor, and control via python program.
  - [ ] Write in AWSIoT component and get the code moving via iot messages.
  - [ ] Build UI and Lambda function to control it.
  - [ ] Push certificates onto the Pi   
-
- 
