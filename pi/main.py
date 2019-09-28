@@ -20,7 +20,7 @@ import logging
 
 from gpiozero import Motor
 from gpiozero import Button
-from time import sleep
+from datetime import datetime
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 # forward is considering closing the garage
@@ -35,7 +35,7 @@ def open_too_long_alert():
     """
         When the door is open for too long, you can send an SNS alert.
     """
-    lps("Door open for too long. Do you want to close it ? ")
+    lps("LONG_OPEN")
 
 
 def garage_status(status):
@@ -63,8 +63,10 @@ def lps(message):
         This method is supposed to log the message to log4j, print to console (for testing),
         and send the message to be logged as an event. All events are logged.
     """
-    print(message)
-    message = '{ "state": "' + message + '" }'
+    now = datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+
+    print('[ ' + now + ' ] ' + message)
+    message = '{ "state": "' + message + '", "timestamp": "' + now + '"}'
     message = json.dumps(message)
     message = json.loads(message)
     try:
@@ -78,7 +80,6 @@ def register_door_sensors():
         Magnetic Reed Switch callback methods to be called on change in state.
     """
 
-    print("Sensor value" + str(sensor.value))
     sensor.when_activated = garage_opened
     sensor.when_deactivated = garage_closed
     sensor.when_held = open_too_long_alert
@@ -100,38 +101,39 @@ def open_close_garage(garage):
 
         TODO: test direction with real motor
     """
+    now = datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
 
-    print("action:" + garage + " sensor value: " + str(sensor.value))
-
-    # motor.forward()
-    # sleep(2)
-    # motor.reverse()
-    # sleep(2)
+    print('[ ' + now + ' ] Sensor state [0: closed, 1: open] = ' + str(sensor.value))
 
     if garage == "open":
-        print("trying to open garage...")
         if sensor.value == 1:
-            print("Garage door is already open. Nothing to open")
+            lps("Garage already open. Nothing to open")
         elif sensor.value == 0:
-            print("Opening the garage...")
+            lps("Opening the garage...")
             motor.forward()
 
     if garage == "close":
         if sensor.value == 0:
-            print("Garage door is already closed. Nothing to close")
+            lps("Garage already closed. Nothing to close")
         elif sensor.value == 1:
-            print("Closing the garage...")
+            lps("Closing the garage...")
             motor.reverse()
 
     if garage == "stop":
-        print("Stopping garage door")
+        lps("Stopping garage door")
         motor.stop()
 
 
-def transcribe_message(message):
+def reply_garage_status():
     """
-        Transcribe the json method via subscription, and open or close garage.
+        Callback method for when the latest status of the garage is requested.
     """
+    if sensor.is_active | sensor.value == 1:
+        lps("OPEN")
+    elif sensor.is_held | sensor.value == 0:
+        lps("CLOSED")
+    else:
+        lps("UNKNOWN")
 
 
 def handle_subscription(client, userdata, message):
@@ -143,11 +145,9 @@ def handle_subscription(client, userdata, message):
 
     """
     # for now printing message, figure out more on payload and play with it.
-    print(message.topic)
-    print(message.payload)
+    lps("Request received on topic: " + str(message.topic) + ", with payload: " + str(message.payload))
     message_data = json.loads(message.payload)
     action = message_data["action"]
-    print(action)
     open_close_garage(action)
 
 
@@ -165,11 +165,12 @@ client = AWSIoTMQTTClient('')
 # Configure client endpoint, port information, certs
 client.configureEndpoint(config.HOST_NAME, config.HOST_PORT)
 client.configureCredentials(config.ROOT_CERT, config.PRIVATE_KEY, config.DEVICE_CERT)
-# client.configureOfflinePublishQueueing(-1)
-# client.configureDrainingFrequency(2)
-# client.configureConnectDisconnectTimeout(10)
-# client.configureMQTTOperationTimeout(5)
+client.configureOfflinePublishQueueing(-1)
+client.configureDrainingFrequency(2)
+client.configureConnectDisconnectTimeout(10)
+client.configureMQTTOperationTimeout(5)
 client.subscribe(config.TOPIC_DOOR, 1, handle_subscription)
+client.subscribe(config.TOPIC_ASK_SENSOR, 0, reply_garage_status)
 
 # Connect
 print('Connecting to endpoint ' + config.HOST_NAME)

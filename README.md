@@ -6,6 +6,9 @@ There are many projects on the internet which emulate this problem, the idea to 
 
 Using the AWS IoT API, the Pi stays local to your network, and also due to the whole certificate exchange and other IoT core security measures you know how the data is travelling b/w your pi and the n/w.   
 
+## Setup across the system
+We are still working on the terraform scripts to make it a viable solution to make it work end to end. For now, check the individual folders for details on how to deploy each of the sections. 
+
 # Architecture
 
 ## AWS Setup
@@ -14,17 +17,10 @@ Using the AWS IoT API, the Pi stays local to your network, and also due to the w
 
 ## GPIO Wiring Diagram
 
-![Alt text](motor-pi-wiring-diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
+![Alt text](fritzing_wiring_diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
 
 ## Phase 2 (not implemented)
 
 Use the AWS ML/AI services and perform image recognition using face profiles. If the user in video is unknown, send intruder alert.
 
 ![Alt text](IotHackathonFlow_Phase2.png?raw=true "Use ML/AI to perform image recognition")
-
-# Task List
-
- - [X] Connect Pi to motor and sensor, and control via python program.
- - [ ] Write in AWSIoT component and get the code moving via iot messages.
- - [ ] Build UI and Lambda function to control it.
- - [ ] Push certificates onto the Pi   
