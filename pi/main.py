@@ -124,7 +124,7 @@ def open_close_garage(garage):
         motor.stop()
 
 
-def reply_garage_status():
+def reply_garage_status(client, userdata, message):
     """
         Callback method for when the latest status of the garage is requested.
     """

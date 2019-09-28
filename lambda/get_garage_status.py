@@ -6,10 +6,19 @@
 
 import boto3
 import json
+from time import sleep
 from botocore.exceptions import ClientError
 
 
 def lambda_handler(event, context):
+    send_message_to_fetch_status()
+
+    # THIS IS GODDAMN STUPID INSANE IDEA!!
+    # DON'T EVER EVER CALL SLEEP IN A LAMBDA. IT COSTS MONEY!
+
+    # Hoping in 5 seconds we have the latest status from the lambda
+    sleep(5)
+
     dynamodb = boto3.resource('dynamodb')
 
     table = dynamodb.Table('CarPen9000-Latest')
@@ -27,21 +36,17 @@ def lambda_handler(event, context):
         return json.dumps(item)
 
 
-
-def send_message_to_fetch_status(event, context):
+def send_message_to_fetch_status():
     client = boto3.client('iot-data', region_name='us-east-1')
-    print(event['body'])
+    print("Asking Pi the current garage status")
+
+    body = {"status"}
 
     # Change topic, qos and payload
     response = client.publish(
-        topic='$aws/things/CarPen9000/door',
+        topic='$aws/things/CarPen9000/askSensor',
         qos=1,
-        payload=event['body']
+        payload=json.dumps(body)
     )
 
-    print("Response")
     print(response)
-
-    return {
-        'statusCode': 200
-    }
