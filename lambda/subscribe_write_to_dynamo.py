@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     now = datetime.now()
 
     item = {
-        "received_timestamp": {           "S": now.strftime("%m/%d/%Y, %H:%M:%S.%f")
+        "received_timestamp": {"S": now.strftime("%m/%d/%Y, %H:%M:%S.%f")
         },
         "timestamp": {
             "S": event["timestamp"]

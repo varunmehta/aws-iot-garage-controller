@@ -13,11 +13,11 @@ from botocore.exceptions import ClientError
 def lambda_handler(event, context):
     send_message_to_fetch_status()
 
-    # THIS IS GODDAMN STUPID INSANE IDEA!!
+    # THIS IS GODDAMN STUPID IDEA!!
     # DON'T EVER EVER CALL SLEEP IN A LAMBDA. IT COSTS MONEY!
 
     # Hoping in 5 seconds we have the latest status from the lambda
-    sleep(5)
+    sleep(2)
 
     dynamodb = boto3.resource('dynamodb')
 
@@ -32,6 +32,7 @@ def lambda_handler(event, context):
     except ClientError as e:
         print(e.response['Error']['Message'])
     else:
+        print
         item = response['Item']
         return json.dumps(item)
 
@@ -40,7 +41,7 @@ def send_message_to_fetch_status():
     client = boto3.client('iot-data', region_name='us-east-1')
     print("Asking Pi the current garage status")
 
-    body = {"status"}
+    body = '{"status"}'
 
     # Change topic, qos and payload
     response = client.publish(
@@ -48,5 +49,3 @@ def send_message_to_fetch_status():
         qos=1,
         payload=json.dumps(body)
     )
-
-    print(response)

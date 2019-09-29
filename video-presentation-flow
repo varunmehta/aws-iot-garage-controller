@@ -1,0 +1,78 @@
+
+Slide 1
+
+Hello
+
+Slide 2
+Have you ever left home in a hurry, wondering if you closed your garage door ?
+You are not home, but have friends coming over, and only if there was a way to let them in before you reach ?
+You let your pet out, to do their business, and left the door open for too long...
+
+Slide 3
+Hello from New York, the botologists bring you "Open Sesame". The modern way to control your garage using a Raspberry Pi.
+
+This is not exactly a new idea, but the old school ways, wanted you to;
+ - register your router to a Dynamic DNS service like DynaDNS or NoIP
+ - Host a web server on your Pi which accepts rest calls.
+ - And then make you open a port on your network to allow calls from anywhere on the internet to operate your garage.
+ - And if you are not a hardened network administrator, who religiously runs security patches on your pi when released, then you are are the mercy of any of the bots sniffing the internet for open ports and vulnerabilities. (https://youtu.be/jk3Z-MVoUg4)
+
+Slide 4
+With AWS IoT-Core, you don't have to reconfigure your router, open ports or worry about your network being compromised. AWS allows you to register your pi as a "thing" with IoT core, provides you with a set of public and private certificates, which ensures secure communication between the Pi and AWS. The certificate prevents any man in the middle attacks, which could compromise your system.
+
+From your Pi, you subscribe to an MQTT topic and trigger functions on call back. You can send commands or jobs as part of the invocation packet, which is then further acted upon by your pi.
+
+Slide 5
+The MVP for our project was
+ - To convert an old garage opener in to a smart garage opener.
+ - Use a Raspberry Pi, expose it to the internet via IoT Core.
+ - Capture door status [open or closed]
+ - Log all events when a door is opened or closed
+ - Expose a REST API to control the garage.
+ - Provide hooks for different events, like the garage door is open for too long.
+
+
+Slide 6
+In this Proof of Concept, we have emulated the hardware using smaller 3V DC motors, instead of hooking up with the real garage motor. Most of the motors used in garage openers are either universal motors or induction motors, which from the point of the relay use similar ideas to switch the motor direction.
+
+We have used a 2 relay module, which allows us to switch polarity of our motors. The relays are activated by supplying a 5V DC voltage across the input pins. Depending upon which pin, IN1 or IN2, the respective relay is energized and the power output is supplied to the motor.
+
+The 5V DC is supplied across VCC and GND on the relay, IN1 and IN2 are connected to two GPIO ports on the Pi.
+
+We also use a magnetic reed switch, which helps us determine the current state of the garage door. The switch is configured in a Normally Closed setup, which means, when the magnet is next to the switch, the output is 0, when the magnet is away from the switch, the circuit returns the value as 1, or open. This helps us determine if the garage door is open or closed. On a regular garage door, the wired side of the switch is screwed to the building frame of the garage, and the magnetic piece is stuck on the garage door. When the garage door moves up or down, the magnet moves along with it, which lets us know if the garage is open or closed. The COMMON and NC ports are also connected to a valid GPIO port and ground. For our setup, we have used GPIO 24 for the reed switch, and 4 & 17 for the motor control.
+
+In a regular garage opener, the relay is connected to a switch, and when the button is pressed, the garage door opens or closes. Connecting them to the GPIO pins, allows us to programmatically control them.
+
+That pretty much covers the hardware section of our setup.
+
+Slide 7
+Moving over to our cloud architecture and software in use. (Show ARCH Diagram here PHASE 2)
+
+All the code for this project is written in python. The code that runs on the Pi and the Lambda functions.
+
+The Pi subscribes & publishes to MQTT topics setup for this "Thing"
+
+We have 3 topics setup in our system (show config.py), which are handled by 3 separate Lambda functions.
+
+ - TOPIC_SENSOR = "$aws/things/CarPen9000/sensor" The state of the magnetic switch is published to this topic. We have setup IoT Topic Rules, which are listening on this topic, when a message arrives at this topic, our lambda function subscribe_write_to_dynamo is triggered. The state of the switch, time of the message, and the time at which the message was received is captured and stored in DynamoDB, with a 45 days TTL.
+
+ There are 3 states which are captured,
+  - When the door is open
+  - when the door is closed
+  - When the door is open beyond a let time limit. For this proof of concept, we have used a time limit of 10 seconds, but in real world scenarios, you could set this to 10-15 minutes. When this time period is reached, a message is published to the topic, and an SNS notification via Email or SMS is sent to the subscriber.
+
+
+ - TOPIC_ASK_SENSOR = "$aws/things/CarPen9000/askSensor" When a user wants to know the current state of the garage, a message is published to this queue, which is then picked up by the Pi, and the state of the switch, is then published to TOPIC_SENSOR.
+
+
+ - TOPIC_DOOR = "$aws/things/CarPen9000/door" When a user wants to open or close the garage, they would publish the action to this topic. The Pi is subscribed to this topic. The functions on the pi, execute code to energize the relays and in turn open or close the garage, as desired.
+
+The lambda functions related to opening & closing the garage, the one and asking current status are fronted by the API gateway, which has Cognito authorizers configured. This ensures only authenticated and authorized access is allowed on the APIs.
+
+The API gateways are exposed to the internet for any authorized user to access and control the garage. Making them available as REST end points, allows endless possibilities of integration points. It opens the controls to all kinds of external systems. Alexa & Google Home can be used to control the garage. Having an API allows IFTTT Webhooks to be configured with the REST API and trigger the garage. The possibilities are end less.
+
+For Phase 2, which we could not complete in the 1 week we had to do this Proof of Concept, we can attach the Pi camera, and enable to click pictures & video every time the door status changes, from Closed to Open. Using MotionPi, even motion detection can be enabled. These captured media files are then fed into Amazon Rekognition, for scene detection. Face profiles for family members can be created, and when an unknown face is encountered, notification alerts will be triggered to let the end user know of an unknown person in the house.
+
+DEMO TIME
+
+For Demo Open Postman and Pi Terminal, with Safari on full screen having DynamoDB database open to show logs.
