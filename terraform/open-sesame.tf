@@ -115,12 +115,54 @@ resource "aws_lambda_function" "write_latest_status_trigger" {
     runtime = "python3.7"
 }
 
+resource "aws_lambda_event_source_mapping" "write_status_attach_trigger" {
+  event_source_arn  = "${aws_dynamodb_table.CarPenn9000-EventLog.stream_arn}"
+  function_name     = "${aws_lambda_function.write_latest_status_trigger.arn}"
+  starting_position = "LATEST"
+}
+
 resource "aws_lambda_function" "subscribe_write_to_dynamo" {
     filename = "${path.module}/artifacts/subscribe_write_to_dynamo.zip"
     function_name = "subscribe_write_to_dynamo"
     role = "${aws_iam_role.garage_lambda_role.arn}"
     handler = "lambda_handler"
     runtime = "python3.7"
+}
+
+//TODO: Include the lambda rule/trigger that will invoke the above function
+//      when the Pi published to MQTT
+
+
+
+
+########## Dynamo
+resource "aws_dynamodb_table" "CarPenn9000-EventLog" {
+    name = "CarPenn9000-EventLog"
+    write_capacity = 5
+    read_capacity = 5
+    hash_key = "status"
+    range_key = "timestamp"
+    stream_enabled = "true"
+    stream_view_type = "NEW_IMAGE"
+    attribute {
+        name = "status"
+        type = "S"
+    }
+    attribute {
+        name = "timestamp"
+        type = "S"
+    }
+}
+
+resource "aws_dynamodb_table" "CarPenn9000-Latest" {
+    name = "CarPenn9000-Latest"
+    write_capacity = 5
+    read_capacity = 5
+    hash_key = "jingo"
+    attribute {
+        name = "jingo"
+        type = "S"
+    }
 }
 
 
