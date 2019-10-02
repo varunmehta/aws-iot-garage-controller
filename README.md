@@ -9,6 +9,9 @@ Using the AWS IoT API, the Pi stays local to your network, and also due to the w
 ## Setup across the system
 We are still working on the terraform scripts to make it a viable solution to make it work end to end. For now, check the individual folders for details on how to deploy each of the sections. 
 
+## YouTube Video
+https://youtu.be/RUC5E85iKgs 
+
 # Architecture
 
 ## AWS Setup
