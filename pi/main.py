@@ -29,7 +29,7 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 motor = Motor(forward=config.PIN_MOTOR_CLOSE, backward=config.PIN_MOTOR_OPEN, pwm=False)
 # if the door is open longer than hold time, it'll send an alert.
 # to prevent false reads with magnets, the bounce time is 2 seconds
-sensor = Button(config.PIN_DOOR_SENSOR, pull_up=True, hold_time=10, bounce_time=5)
+sensor = Button(config.PIN_DOOR_SENSOR, pull_up=True, hold_time=10, bounce_time=2)
 
 
 def open_too_long_alert():
@@ -120,7 +120,7 @@ def open_close_garage(garage):
             lps("Garage already closed. Nothing to close")
         elif sensor.value == 1:
             lps("Closing the garage...")
-            motor.reverse()
+            motor.backward()
             sleep(5)
             motor.stop()
 
