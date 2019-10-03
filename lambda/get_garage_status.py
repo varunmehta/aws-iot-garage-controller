@@ -11,30 +11,26 @@ from botocore.exceptions import ClientError
 
 
 def lambda_handler(event, context):
-    send_message_to_fetch_status()
-
-    # THIS IS GODDAMN STUPID IDEA!!
-    # DON'T EVER EVER CALL SLEEP IN A LAMBDA. IT COSTS MONEY!
-
-    # Hoping in 5 seconds we have the latest status from the lambda
-    sleep(2)
-
     dynamodb = boto3.resource('dynamodb')
 
     table = dynamodb.Table('CarPen9000-Latest')
 
     try:
-        response = table.get_item(
-            Key={
-                'status': 'latest'
-            }
-        )
+        response = table.scan()
     except ClientError as e:
+        print("ERROR")
         print(e.response['Error']['Message'])
     else:
-        print
-        item = response['Item']
-        return json.dumps(item)
+        print(response)
+        item_str = response['Items'][0]
+        item = json.dumps(item_str)
+        return {
+            'statusCode': 200,
+            'headers': {
+                "Access-Control-Allow-Origin": "*"
+            },
+            'body': item
+        }
 
 
 def send_message_to_fetch_status():
