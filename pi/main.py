@@ -20,6 +20,7 @@ import logging
 
 from gpiozero import Motor
 from gpiozero import Button
+from time import sleep
 from datetime import datetime
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
