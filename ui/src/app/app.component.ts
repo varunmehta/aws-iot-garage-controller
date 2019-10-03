@@ -15,15 +15,15 @@ export class AppComponent {
   httpOptions = {
     headers: new HttpHeaders({
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'OPTIONS,POST',
-      'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+      // 'Access-Control-Allow-Methods': 'OPTIONS,POST',
+      // 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
       'Content-Type': 'text/plain'
     })
   };
   url = 'https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/garage';
 
-  garageOpener() {
-    this.postGarage({action: 'close'}).subscribe(
+  garageOpener(type) {
+    this.postGarage({action: type}).subscribe(
       (val) => {
         console.log("POST call successful value returned in body", val);
         },
@@ -37,7 +37,7 @@ export class AppComponent {
   }
 
   postGarage(payload: { 'action': string; }): Observable<JSON> {
-    console.log('Closing Garage');
+    console.log('Sending:', payload);
     return this.http.post<JSON>(this.url, payload, this.httpOptions)
     .pipe(
       catchError(this.handleError)
