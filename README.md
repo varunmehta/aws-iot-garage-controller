@@ -7,10 +7,10 @@ There are many projects on the internet which emulate this problem, the idea to 
 Using the AWS IoT API, the Pi stays local to your network, and also due to the whole certificate exchange and other IoT core security measures you know how the data is travelling b/w your pi and the n/w.   
 
 ## Setup across the system
-We are still working on the terraform scripts to make it a viable solution to make it work end to end. For now, check the individual folders for details on how to deploy each of the sections. 
+We are still working on the terraform scripts to make it a viable solution to make it work end to end. For now, check the individual folders for details on how to deploy each of the sections.
 
 ## YouTube Video
-https://youtu.be/RUC5E85iKgs 
+https://youtu.be/RUC5E85iKgs
 
 # Architecture
 
@@ -21,6 +21,10 @@ https://youtu.be/RUC5E85iKgs
 ## GPIO Wiring Diagram
 
 ![Alt text](fritzing_wiring_diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
+
+## UI [New, We now have an updated UI on cloudfront]
+
+![Alt text](CloudFront-UI-Screenshot.jpg?raw=true "Angular UI screenshot")
 
 ## Phase 2 (not implemented)
 
