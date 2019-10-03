@@ -111,6 +111,8 @@ def open_close_garage(garage):
         elif sensor.value == 0:
             lps("Opening the garage...")
             motor.forward()
+            sleep(5)
+            motor.stop()
 
     if garage == "close":
         if sensor.value == 0:
@@ -118,6 +120,8 @@ def open_close_garage(garage):
         elif sensor.value == 1:
             lps("Closing the garage...")
             motor.reverse()
+            sleep(5)
+            motor.stop()
 
     if garage == "stop":
         lps("Stopping garage door")
