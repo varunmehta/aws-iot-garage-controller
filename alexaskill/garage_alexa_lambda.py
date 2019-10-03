@@ -1,3 +1,6 @@
+from __future__ import print_function
+from botocore.vendored import requests
+
 """
 This is a Python template for Alexa to get you building skills (conversations) quickly.
 
@@ -22,7 +25,6 @@ invoke_response['Payload'].read()
  
 """
 
-from __future__ import print_function
 
 
 # --------------- Helpers that build all of the responses ----------------------
@@ -73,13 +75,30 @@ def get_garage_response():
     """ An example of a custom intent. Same structure as welcome message, just make sure to add this intent
     in your alexa skill in order for it to work.
     """
+    
+    resp = requests.post('https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/garage', data='{"action":"open"}')
+    print('Response: ', resp)
     session_attributes = {}
     card_title = "Garage"
     speech_output = "Garage is opening"
     reprompt_text = "Your garage is opening now."
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))    
+        card_title, speech_output, reprompt_text, should_end_session))   
+        
+def get_garageClose_response():
+    """ An example of a custom intent. Same structure as welcome message, just make sure to add this intent
+    in your alexa skill in order for it to work.
+    """
+    respC = requests.post('https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/garage', data='{"action":"close"}')
+    print('Response: ', respC)
+    session_attributes = {}
+    card_title = "Garage Close"
+    speech_output = "Garage is closing"
+    reprompt_text = "Your garage is closing now."
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, reprompt_text, should_end_session))  
         
 def get_compliment_response():
     """ An example of a custom intent. Same structure as welcome message, just make sure to add this intent
@@ -148,6 +167,8 @@ def on_intent(intent_request, session):
         return get_test_response()
     elif intent_name == "garage":
         return get_garage_response()
+    elif intent_name == "garageClose":
+        return get_garageClose_response()
     elif intent_name == "compliment":
         return get_compliment_response()
     elif intent_name == "AMAZON.HelpIntent":
