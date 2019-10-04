@@ -24,7 +24,7 @@ https://youtu.be/RUC5E85iKgs
 
 ## UI [New, We now have an updated UI on cloudfront]
 
-![Alt text](CloudFront-UI-Screenshot.jpg?raw=true "Angular UI screenshot")
+<img src="CloudFront-UI-Screenshot.jpg" width="300">
 
 ## Phase 2 (not implemented)
 
