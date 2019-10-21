@@ -1,0 +1,19 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "iot-app-dev-20191014102651-authRole",
+            "UnauthRoleArn": "arn:aws:iam::201751494828:role/iot-app-dev-20191014102651-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::201751494828:role/iot-app-dev-20191014102651-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "iot-app-dev-20191014102651-deployment",
+            "UnauthRoleName": "iot-app-dev-20191014102651-unauthRole",
+            "StackName": "iot-app-dev-20191014102651",
+            "StackId": "arn:aws:cloudformation:us-east-1:201751494828:stack/iot-app-dev-20191014102651/a9d24fd0-ee8e-11e9-ab4b-0a6fb8e9c8ee"
+        },
+        "categories": {
+            "auth": {
+                "iotapp36029ff8": {}
+            }
+        }
+    }
+}
