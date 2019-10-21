@@ -11,7 +11,7 @@ export class AuthComponent implements OnInit {
   constructor(private amplifyService:AmplifyService, private _router: Router ) { 
     this.amplifyService = amplifyService;
     this.amplifyService.authStateChange$.subscribe(authState =>{
-      if(authState.state ==="signedIn"){
+      if(authState.state === "signedIn"){
         this._router.navigateByUrl("/home");
       }
     })
