@@ -13,18 +13,18 @@ Amplify.configure(awsconfig);
 
 const oauth = {
   // Domain name
-  domain : 'iot-app.auth.us-east-1.amazoncognito.com', 
-  
+  domain : 'iot-app.auth.us-east-1.amazoncognito.com',
+
   // Authorized scopes
-  scope : ['phone', 'email', 'profile', 'openid','aws.cognito.signin.user.admin'], 
+  scope : ['phone', 'email', 'profile', 'openid','aws.cognito.signin.user.admin'],
 
   // Callback URL
-  redirectSignIn : 'http://localhost:4200', 
-  
+  redirectSignIn : 'http://localhost:4200/home',
+
   // Sign out URL
   redirectSignOut : 'http://localhost:4200',
 
-  // 'code' for Authorization code grant, 
+  // 'code' for Authorization code grant,
   // 'token' for Implicit grant
   responseType: 'code',
 

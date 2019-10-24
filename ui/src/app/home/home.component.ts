@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 import { catchError} from 'rxjs/operators';
 import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
-
+import { MatTabsModule } from '@angular/material';
 
 @Component({
   selector: 'app-home',
@@ -11,11 +11,12 @@ import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  
+
 
   constructor(private http: HttpClient) { }
   title = 'Open Sesame';
   status = ''
+  logs = []
   httpOptions = {
     headers: new HttpHeaders({
       'Access-Control-Allow-Origin': '*',
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit {
   }
   ngOnInit() {
     this.setStatus();
+    this.setLogs();
   }
   url = 'https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/garage';
 
@@ -73,6 +75,22 @@ export class HomeComponent implements OnInit {
     console.log("Response: ", response)
   }
 
+  // TODO: call api (lambda) to get 10 most recent log entries
+  setLogs() {
+    this.logs = [
+      {'status': 'OPEN', 'time': "12:00"},
+      {'status': 'CLOSED', 'time': "1:00"},
+      {'status': 'LONG_OPEN', 'time': "2:00"},
+      {'status': 'OPEN', 'time': "12:00"},
+      {'status': 'CLOSED', 'time': "1:00"},
+      {'status': 'LONG_OPEN', 'time': "2:00"},
+      {'status': 'OPEN', 'time': "12:00"},
+      {'status': 'CLOSED', 'time': "1:00"},
+      {'status': 'LONG_OPEN', 'time': "2:00"},
+      {'status': 'OPEN', 'time': "12:00"}
+    ]
+  }
+
   postGarage(payload: { 'action': string; }): Observable<JSON> {
     console.log('Sending:', payload);
     return this.http.post<JSON>(this.url, payload, this.httpOptions)
@@ -86,6 +104,12 @@ export class HomeComponent implements OnInit {
     .pipe(
       catchError(this.handleError)
     );
+  }
+
+  getLogs(): Observable<JSON> {
+    return this.http.get<JSON>(this.url, this.httpOptions).pipe(
+      catchError(this.handleError)
+    )
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -103,6 +127,7 @@ export class HomeComponent implements OnInit {
     return throwError(
       'Something bad happened; please try again later.');
   }
+
 
 }
 

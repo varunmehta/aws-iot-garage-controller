@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthComponent } from './auth/auth.component';
 import { HomeComponent } from './home/home.component';
 import {AmplifyService} from 'aws-amplify-angular';
+import { MatTabsModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {AmplifyService} from 'aws-amplify-angular';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatTabsModule
   ],
   providers: [AmplifyService],
   bootstrap: [AppComponent]
