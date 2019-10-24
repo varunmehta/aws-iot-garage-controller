@@ -11,7 +11,7 @@
     <mat-tab-group mat-align-tabs="center"G>
     <mat-tab label="Controls">
     <!-- Highlight Card -->
-    <div class="card highlight-card card-small">
+    <div class="card highlight-card card-small" style="margin : 20px;">
 
       <svg id="rocket" alt="Rocket Ship" xmlns="http://www.w3.org/2000/svg" width="101.678" height="101.678" viewBox="0 0 101.678 101.678">
         <g id="Group_83" data-name="Group 83" transform="translate(-141 -696)">
@@ -88,16 +88,19 @@
     </div>
     </mat-tab>
     <mat-tab label="Logs">
+      <h2>Most Recent Garage Events</h2>
         <table class="logs">
               <thead>
                 <tr>
                   <th>Status</th>
+                  <th>Date</th>
                   <th>Time</th>
                 </tr>
               </thead>
               <tbody>
               <tr *ngFor="let entry of logs">
                  <td>{{ entry.status }}</td>
+                 <td>{{ entry.date }}</td>
                  <td>{{ entry.time }}</td></tr>
               </tbody>
           </table>

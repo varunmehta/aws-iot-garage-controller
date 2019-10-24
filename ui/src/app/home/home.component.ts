@@ -29,7 +29,8 @@ export class HomeComponent implements OnInit {
     this.setStatus();
     this.setLogs();
   }
-  url = 'https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/garage';
+  garage_url = 'https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/garage';
+  logs_url = 'https://v6naxj1ttk.execute-api.us-east-1.amazonaws.com/deploy/logs';
 
   garageOpener(type) {
     if(type == "open"){
@@ -77,39 +78,44 @@ export class HomeComponent implements OnInit {
 
   // TODO: call api (lambda) to get 10 most recent log entries
   setLogs() {
-    this.logs = [
-      {'status': 'OPEN', 'time': "12:00"},
-      {'status': 'CLOSED', 'time': "1:00"},
-      {'status': 'LONG_OPEN', 'time': "2:00"},
-      {'status': 'OPEN', 'time': "12:00"},
-      {'status': 'CLOSED', 'time': "1:00"},
-      {'status': 'LONG_OPEN', 'time': "2:00"},
-      {'status': 'OPEN', 'time': "12:00"},
-      {'status': 'CLOSED', 'time': "1:00"},
-      {'status': 'LONG_OPEN', 'time': "2:00"},
-      {'status': 'OPEN', 'time': "12:00"}
-    ]
+    const response = this.getLogs().subscribe(
+      (logs) => {
+        let cleaned_logs = []
+        for(const log of logs){
+          console.log("ENTRY:")
+          console.log(log)
+          const dateAndTime = log['received_timestamp'].split(',')
+          cleaned_logs.push({
+            'status': log['status'],
+            'date': dateAndTime[0].trim(),
+            'time': dateAndTime[1].trim().split('.')[0] + " UTC"
+          });
+        }
+        this.logs = cleaned_logs;
+      }
+    );
   }
 
   postGarage(payload: { 'action': string; }): Observable<JSON> {
     console.log('Sending:', payload);
-    return this.http.post<JSON>(this.url, payload, this.httpOptions)
+    return this.http.post<JSON>(this.garage_url, payload, this.httpOptions)
     .pipe(
       catchError(this.handleError)
     );
   }
 
   getGarage(): Observable<JSON> {
-    return this.http.get<JSON>(this.url, this.httpOptions)
+    return this.http.get<JSON>(this.garage_url, this.httpOptions)
     .pipe(
       catchError(this.handleError)
     );
   }
 
-  getLogs(): Observable<JSON> {
-    return this.http.get<JSON>(this.url, this.httpOptions).pipe(
+  getLogs(): Observable<any[]> {
+    return this.http.get<any[]>(this.logs_url, this.httpOptions)
+    .pipe(
       catchError(this.handleError)
-    )
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
