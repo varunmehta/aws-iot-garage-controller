@@ -120,7 +120,7 @@ def open_close_garage(garage):
             lps("Opening the garage...")
             switch_led_color("moving")
             motor.forward()
-            sleep(5)
+            sleep(3)
             motor.stop()
 
     if garage == "close":
@@ -130,7 +130,7 @@ def open_close_garage(garage):
             lps("Closing the garage...")
             switch_led_color("moving")
             motor.backward()
-            sleep(5)
+            sleep(3)
             motor.stop()
 
     if garage == "stop":
