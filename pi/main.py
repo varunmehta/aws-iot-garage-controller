@@ -20,6 +20,7 @@ import logging
 
 from gpiozero import Motor
 from gpiozero import Button
+from gpiozero import RGBLED
 from time import sleep
 from datetime import datetime
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -30,6 +31,10 @@ motor = Motor(forward=config.PIN_MOTOR_CLOSE, backward=config.PIN_MOTOR_OPEN, pw
 # if the door is open longer than hold time, it'll send an alert.
 # to prevent false reads with magnets, the bounce time is 2 seconds
 sensor = Button(config.PIN_DOOR_SENSOR, pull_up=True, hold_time=10, bounce_time=2)
+
+# RGB LED to reflect the state of the garage door
+# RED - CLOSED | GREEN - OPEN | YELLOW - MOVEMENT (OPENING OR CLOSING)
+led = RGBLED(red=config.PIN_LED_RED, green=config.PIN_LED_GREEN, blue=config.PIN_LED_BLUE, pwm=True)
 
 
 def open_too_long_alert():
@@ -49,10 +54,12 @@ def garage_status(status):
 
 def garage_opened():
     garage_status("OPEN")
+    switch_led_color("open")
 
 
 def garage_closed():
     garage_status("CLOSE")
+    switch_led_color("close")
 
 
 def lps(message):
@@ -111,6 +118,7 @@ def open_close_garage(garage):
             lps("Garage already open. Nothing to open")
         elif sensor.value == 0:
             lps("Opening the garage...")
+            switch_led_color("moving")
             motor.forward()
             sleep(5)
             motor.stop()
@@ -120,6 +128,7 @@ def open_close_garage(garage):
             lps("Garage already closed. Nothing to close")
         elif sensor.value == 1:
             lps("Closing the garage...")
+            switch_led_color("moving")
             motor.backward()
             sleep(5)
             motor.stop()
@@ -127,6 +136,22 @@ def open_close_garage(garage):
     if garage == "stop":
         lps("Stopping garage door")
         motor.stop()
+
+    led.blink()
+
+
+def switch_led_color(state):
+    """
+        Responsible for switching color of RGB LED based of door status.
+    """
+    if state == "moving":
+        led.blink(0.5, 0.5, 0.2, 0.2, (1, 1, 0), (0.1, 0.1, 0), 5, True)  # blink yellow
+    elif state == "open":
+        led.blink(0.5, 0.5, 0.2, 0.2, (0, 1, 0), (0, 0.1, 0), 5, True)  # blink green
+    elif state == "close":
+        led.blink(0.5, 0.5, 0.2, 0.2, (1, 0, 0), (0.1, 0, 0), 5, True)  # blink red
+    else:
+        led.color = (0, 0, 0)  # off
 
 
 def reply_garage_status(client, userdata, message):

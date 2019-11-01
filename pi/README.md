@@ -2,6 +2,16 @@
 
 The code that runs on the Raspberry Pi resides here. For hardware setup, please refer the home page of this project. It lays out the connection diagram and overall architecture diagram of the application.
 
+## Pre-requisite
+Before we start using the garage opener, in order for the service to work as expected, we have to install a couple of packages. Install the following;
+
+```
+sudo apt-get install motion
+```
+[Install Motion & MotionEye](https://github.com/ccrisan/motioneye/wiki/Install-On-Raspbian)
+
+## Deploy on Pi
+
 ## config.py
 
 Change topic names, location of certificates and GPIO pins if you rewire your garage.
