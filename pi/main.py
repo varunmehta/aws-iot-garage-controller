@@ -30,7 +30,7 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 motor = Motor(forward=config.PIN_MOTOR_CLOSE, backward=config.PIN_MOTOR_OPEN, pwm=False)
 # if the door is open longer than hold time, it'll send an alert.
 # to prevent false reads with magnets, the bounce time is 2 seconds
-sensor = Button(config.PIN_DOOR_SENSOR, pull_up=True, hold_time=10, bounce_time=2)
+sensor = Button(config.PIN_DOOR_SENSOR, pull_up=True, hold_time=15, bounce_time=2)
 
 # RGB LED to reflect the state of the garage door
 # RED - CLOSED | GREEN - OPEN | YELLOW - MOVEMENT (OPENING OR CLOSING)
