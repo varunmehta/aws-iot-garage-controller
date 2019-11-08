@@ -19,5 +19,10 @@ QOS_LEVEL = 1
 # GPIO PIN CONFIG
 # In the future, fetch this from cloud config, so you can change as needed, without having to change code.
 PIN_MOTOR_OPEN = 4
-PIN_MOTOR_CLOSE = 17
-PIN_DOOR_SENSOR = 24
+PIN_MOTOR_CLOSE = 14
+PIN_DOOR_SENSOR = 21
+
+# RGB LED PINS
+PIN_LED_RED = 9
+PIN_LED_GREEN = 10
+PIN_LED_BLUE = 11

@@ -17,6 +17,7 @@ This is the main garage controller. The features it entails.
 import json
 import config
 import logging
+import rekognize
 
 from gpiozero import Motor
 from gpiozero import Button
