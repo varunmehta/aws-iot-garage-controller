@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     for record in event['Records']:
         item = get_latest_value(record)
         if item['status'] == 'OPEN' or item['status'] == 'CLOSE' or item['status'] == 'LONG_OPEN':
-            try: 
+            try:
                 response = table.delete_item(
                     Key={
                         'jingo': '1'
@@ -31,6 +31,18 @@ def lambda_handler(event, context):
                 print("ERROR DELETING")
             print("Writing: " + str(item))
             response = table.put_item(Item=item)
+            if item['status'] == 'LONG_OPEN':
+                sns = boto3.client('sns')
+                response = sns.publish(
+                    TopicArn='arn:aws:sns:us-east-1:<account_id>:Garage-Notification',
+                    Message='Garage Door Open for too long!',
+                )
+            elif item['status'] == 'INTRUDER_ALERT':
+                sns = boto3.client('sns')
+                response = sns.publish(
+                    TopicArn='arn:aws:sns:us-east-1:<account_id>:Garage-Notification',
+                    Message='INTRUDER ALERT!',
+                )
             print("PutItem succeeded: " + str(response))
         else:
             print("Note updating the status")
@@ -53,9 +65,9 @@ def get_latest_value(record):
         'status': keys['status']['S'],
         'timestamp': keys['timestamp']['S'],
         'jingo': '1'
-        
+
     }
-    
+
     # item = {
     #     'status': new_image["status"]["S"],
     #     'jingo': '1'

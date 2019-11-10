@@ -205,9 +205,13 @@ client.subscribe(config.TOPIC_ASK_SENSOR, 0, reply_garage_status)
 
 # Connect
 print('Connecting to endpoint ' + config.HOST_NAME)
+
 client.connect()
 
 register_door_sensors()
+
+# Register rekognize
+rekognize.main(client)
 
 """
 For the main method, first register sensors, and then for every subscription, add a call back,
