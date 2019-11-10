@@ -45,7 +45,7 @@ def lambda_handler(event, context):
                 Message='INTRUDER ALERT!',
             )
             print("Intruder alert dispatched! " + str(response))
-        else
+        else:
             print("Note updating the status")
 
     return {
