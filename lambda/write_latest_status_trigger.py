@@ -37,14 +37,15 @@ def lambda_handler(event, context):
                     TopicArn='arn:aws:sns:us-east-1:<account_id>:Garage-Notification',
                     Message='Garage Door Open for too long!',
                 )
-            elif item['status'] == 'INTRUDER_ALERT':
-                sns = boto3.client('sns')
-                response = sns.publish(
-                    TopicArn='arn:aws:sns:us-east-1:<account_id>:Garage-Notification',
-                    Message='INTRUDER ALERT!',
-                )
             print("PutItem succeeded: " + str(response))
-        else:
+        elif item['status'] == 'INTRUDER_ALERT':
+            sns = boto3.client('sns')
+            response = sns.publish(
+                TopicArn='arn:aws:sns:us-east-1:<account_id>:Garage-Notification',
+                Message='INTRUDER ALERT!',
+            )
+            print("Intruder alert dispatched! " + str(response))
+        else
             print("Note updating the status")
 
     return {
