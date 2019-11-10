@@ -108,7 +108,9 @@ def process(image):
                 res['FaceMatches'][0]['Face']['ExternalImageId'], round(res['FaceMatches'][0]['Similarity'], 1),
                 round(res['FaceMatches'][0]['Face']['Confidence'], 2))
             print(message)
-            lps(message)
+            lps("Matched %s - %r similarity and %r confidence" % (
+                res['FaceMatches'][0]['Face'], round(res['FaceMatches'][0]['Similarity'], 1),
+                round(res['FaceMatches'][0]['Face']['Confidence'], 2)))
         else:
             print("[-] No face matches detected...")
             lps("INTRUDER_ALERT")
