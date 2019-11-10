@@ -9,25 +9,28 @@ Using the AWS IoT API, the Pi stays local to your network, and also due to the w
 ## Setup across the system
 We are still working on the terraform scripts to make it a viable solution to make it work end to end. For now, check the individual folders for details on how to deploy each of the sections.
 
-## YouTube Video
-https://youtu.be/RUC5E85iKgs
-
 # Architecture
 
 ## AWS Setup
 
-![Alt text](IotHackathonFlow.png?raw=true "AWS Ecosystem")
+![Alt text](assets/IotHackathonFlow.png?raw=true "AWS Ecosystem")
 
 ## GPIO Wiring Diagram
 
-![Alt text](fritzing_wiring_diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
+![Alt text](assets/fritzing_wiring_diagram.png?raw=true "Motor-Relay-Pi Wiring Diagram")
 
 ## UI [New, We now have an updated UI on cloudfront]
 
-<img src="CloudFront-UI-Screenshot.jpg" width="300">
+<img src="assets/ui_buttons.PNG" width="300">
+<img src="assets/ui_logs.PNG" width="300">
 
-## Phase 2 (not implemented)
+## Phase 2
 
 Use the AWS ML/AI services and perform image recognition using face profiles. If the user in video is unknown, send intruder alert.
 
-![Alt text](IotHackathonFlow_Phase2.png?raw=true "Use ML/AI to perform image recognition")
+![Alt text](assets/IotHackathonFlow_Phase2.png?raw=true "Use ML/AI to perform image recognition")
+
+
+## Demo
+
+![Alt text](assets/demo.gif?raw=true "Demo of garage in action")
