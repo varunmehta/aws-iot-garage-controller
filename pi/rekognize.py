@@ -119,7 +119,10 @@ def process(image):
 
 
 def main(iot_client):
+    print('starting facial rekognition tracker')
     set_iot_client(iot_client)
+    w = Watcher()
+    w.run()
 
 
 class Handler(FileSystemEventHandler):
@@ -138,8 +141,3 @@ class Handler(FileSystemEventHandler):
             # Taken any action here when a file is modified.
             print("Received modified event - %s." % event.src_path)
             process(event.src_path)
-
-
-if __name__ == '__main__':
-    w = Watcher()
-    w.run()
