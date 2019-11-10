@@ -137,7 +137,8 @@ class Handler(FileSystemEventHandler):
             print("Received created event - %s." % event.src_path)
             process(event.src_path)
 
-        elif event.event_type == 'modified':
+        # Skip modified for now, just created event
+        # elif event.event_type == 'modified':
             # Taken any action here when a file is modified.
-            print("Received modified event - %s." % event.src_path)
-            process(event.src_path)
+            # print("Received modified event - %s." % event.src_path)
+            # process(event.src_path)
