@@ -109,7 +109,7 @@ def process(image):
                 round(res['FaceMatches'][0]['Face']['Confidence'], 2))
             print(message)
             lps("Matched %s - %r similarity and %r confidence" % (
-                res['FaceMatches'][0]['Face'], round(res['FaceMatches'][0]['Similarity'], 1),
+                res['FaceMatches'][0]['Face']['ExternalImageId'], round(res['FaceMatches'][0]['Similarity'], 1),
                 round(res['FaceMatches'][0]['Face']['Confidence'], 2)))
         else:
             print("[-] No face matches detected...")
