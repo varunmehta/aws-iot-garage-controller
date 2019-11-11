@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "iotapp36029ff8_identitypool_36029ff8",
+    "identityPoolName": "opensesameed4c26ad_identitypool_ed4c26ad",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "iotapp36029ff8",
-    "userPoolName": "iotapp36029ff8_userpool_36029ff8",
+    "resourceNameTruncated": "openseed4c26ad",
+    "userPoolName": "opensesameed4c26ad_userpool_ed4c26ad",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,9 +28,9 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "iotapp36029ff8_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "openseed4c26ad_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "resourceName": "iotapp36029ff8",
+    "resourceName": "opensesameed4c26ad",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [

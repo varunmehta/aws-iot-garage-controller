@@ -1,23 +1,19 @@
-import { NgModule, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Auth, AuthClass } from 'aws-amplify';
-import { RouterModule, Routes } from '@angular/router';
-import {AuthComponent} from "src/app/auth/auth.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuardService } from './auth-guard.service';
 
-const routes: Routes = [
-  {path: "", component:AuthComponent},
-  {path: "home", component: HomeComponent},
+
+const routes: Routes = [ 
+  {path: "", component:NavComponent},
+  {path: "home", component: HomeComponent, canActivate: [AuthGuardService]},
   {path:"**", redirectTo:""}
-]
+
+];
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    RouterModule.forRoot(routes)
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

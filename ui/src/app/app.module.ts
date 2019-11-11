@@ -1,29 +1,35 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule} from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { AppRoutingModule } from './app-routing.module';
-import { AuthComponent } from './auth/auth.component';
+import { AppComponent } from './app.component';
+import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
-import {AmplifyService} from 'aws-amplify-angular';
+import { AmplifyService } from 'aws-amplify-angular';
+import { HttpClientModule } from '@angular/common/http';
+import { AmplifyAngularModule, AmplifyIonicModule} from 'aws-amplify-angular'
+import { AuthGuardService } from './auth-guard.service';
+import { MatTabsModuleComponent } from './mat-tabs-module/mat-tabs-module.component';
 import { MatTabsModule } from '@angular/material';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AuthComponent,
-    HomeComponent
+    NavComponent,
+    HomeComponent,
+    MatTabsModuleComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     AppRoutingModule,
-    MatTabsModule
+    HttpClientModule,
+    AmplifyAngularModule, 
+    AmplifyIonicModule,
+    MatTabsModule   
   ],
-  providers: [AmplifyService],
+  providers: [AmplifyService, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

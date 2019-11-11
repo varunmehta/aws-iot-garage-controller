@@ -2,13 +2,13 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
-    "aws_content_delivery_bucket": "iot-app-bucket-dev",
+    "aws_content_delivery_bucket": "open-sesame-garage-opener-dev",
     "aws_content_delivery_bucket_region": "us-east-1",
-    "aws_content_delivery_url": "https://d20ib9v5l7txs6.cloudfront.net",
-    "aws_cognito_identity_pool_id": "us-east-1:832f5504-bf85-4bff-b590-561b55f0ab7a",
+    "aws_content_delivery_url": "https://d1t897keljx910.cloudfront.net",
+    "aws_cognito_identity_pool_id": "us-east-1:16cda150-aba9-4c8f-95e1-d0714b384c54",
     "aws_cognito_region": "us-east-1",
-    "aws_user_pools_id": "us-east-1_ZQ4P9T12r",
-    "aws_user_pools_web_client_id": "6cqe43suhn8pdak9clnj7jj7bm",
+    "aws_user_pools_id": "us-east-1_lAlcf6EQh",
+    "aws_user_pools_web_client_id": "211ei0tj9kjg2g6rauhl3juk95",
     "oauth": {}
 };
 

@@ -1,12 +1,12 @@
 {
-    "projectName": "iot-app",
+    "projectName": "openSesame",
     "version": "2.0",
     "frontend": "javascript",
     "javascript": {
         "framework": "angular",
         "config": {
             "SourceDir": "src",
-            "DistributionDir": "dist/iot-app",
+            "DistributionDir": "dist/openSesame",
             "BuildCommand": "npm run-script build",
             "StartCommand": "ng serve -o"
         }

@@ -6,7 +6,7 @@
 		}
 	},
 	"auth": {
-		"iotapp36029ff8": {
+		"opensesameed4c26ad": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": []

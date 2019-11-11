@@ -1,30 +1,27 @@
-import 'hammerjs';
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-
 import Amplify, {Auth} from 'aws-amplify';
 import awsconfig from './aws-exports';
-
 
 Amplify.configure(awsconfig);
 
 const oauth = {
   // Domain name
-  domain : 'iot-app.auth.us-east-1.amazoncognito.com',
-
+  domain : 'open-sesame-app.auth.us-east-1.amazoncognito.com', 
+  
   // Authorized scopes
-  scope : ['phone', 'email', 'profile', 'openid','aws.cognito.signin.user.admin'],
+  scope : ['phone', 'email', 'profile', 'openid','aws.cognito.signin.user.admin'], 
 
   // Callback URL
-  redirectSignIn : 'http://localhost:4200/home',
-
+  redirectSignIn : 'https://d2zixqrhf9jcvd.cloudfront.net/', 
+  
   // Sign out URL
-  redirectSignOut : 'http://localhost:4200',
+  redirectSignOut : 'https://d2zixqrhf9jcvd.cloudfront.net/',
 
-  // 'code' for Authorization code grant,
+  // 'code' for Authorization code grant, 
   // 'token' for Implicit grant
   responseType: 'code',
 
